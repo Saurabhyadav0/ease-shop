@@ -14,6 +14,11 @@ export const Navbar: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMounted, setIsMounted] = useState(false); // To track client-side mounting
+
+  useEffect(() => {
+    setIsMounted(true); // This will run after the first render on the client side
+  }, []);
 
   useEffect(() => {
     if (searchParams) {
@@ -29,8 +34,11 @@ export const Navbar: React.FC = () => {
     }
   };
 
+  // Render the navbar only after mounting to avoid hydration mismatch
+  if (!isMounted) return null;
+
   return (
-    <header className=" backdrop-blur-md bg-white/50 dark:bg-gray-800/50 shadow-mdbg-white dark:bg-gray-900 border-b dark:border-gray-700 sticky top-0 z-10">
+    <header className="backdrop-blur-md bg-white/50 dark:bg-gray-800/50 shadow-mdbg-white dark:bg-gray-900 border-b dark:border-gray-700 sticky top-0 z-10">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}

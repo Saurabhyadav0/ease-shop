@@ -18,9 +18,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </main>
 
       <footer className="bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 py-6">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-gray-600 dark:text-gray-400 text-sm">
+        <div className="container mx-auto px-4 flex justify-between items-center text-gray-600 dark:text-gray-400 text-sm">
           <p>© {new Date().getFullYear()} ShopEase. All rights reserved.</p>
-          <p className="mt-2 md:mt-0">Made with <span className="text-red-500">❤️</span> by Saurabh</p>
+          <p className="text-right text-gray-800 dark:text-gray-200">
+            Made with <span className="text-red-500">❤️</span> by Saurabh
+          </p>
         </div>
       </footer>
 

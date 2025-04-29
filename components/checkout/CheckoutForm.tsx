@@ -77,6 +77,9 @@ const CheckoutForm: React.FC = () => {
     setIsSubmitting(true);
 
     setTimeout(() => {
+      // Log the form data to the console
+      console.log('Form Data Submitted:', formData);
+
       clearCart();
       setIsSubmitting(false);
       toast.success('Order placed successfully!');
