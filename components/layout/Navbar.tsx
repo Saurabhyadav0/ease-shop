@@ -7,6 +7,7 @@ import { ShoppingCart, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import useCartStore from '@/store/useCartStore';
+import ToggleButton from '../ToggleButton';
 
 export const Navbar: React.FC = () => {
   const { totalItems } = useCartStore();
@@ -65,6 +66,7 @@ export const Navbar: React.FC = () => {
                 )}
               </Button>
             </Link>
+            <div><ToggleButton/></div>
           </div>
         </div>
       </div>
