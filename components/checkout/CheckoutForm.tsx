@@ -24,13 +24,15 @@ const CheckoutForm: React.FC = () => {
     cardCvc: '',
   });
 
+  const inputClassName = "w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop-primary/30 dark:bg-gray-800 dark:border-gray-600 dark:text-white";
+  const labelClassName = "block text-sm font-medium mb-1 dark:text-gray-300";
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
-    // Format card number with spaces
+
     if (name === 'cardNumber') {
       const formatted = value.replace(/\s/g, '').replace(/\D/g, '').slice(0, 16);
-      const groups: string[] = [];  // Explicitly define groups as an array of strings
+      const groups: string[] = [];
       for (let i = 0; i < formatted.length; i += 4) {
         groups.push(formatted.slice(i, i + 4));
       }
@@ -38,7 +40,6 @@ const CheckoutForm: React.FC = () => {
       return;
     }
 
-    // Format expiry date
     if (name === 'cardExpiry') {
       const formatted = value.replace(/\s/g, '').replace(/\D/g, '').slice(0, 4);
       if (formatted.length > 2) {
@@ -48,8 +49,7 @@ const CheckoutForm: React.FC = () => {
       }
       return;
     }
-    
-    // Format CVC
+
     if (name === 'cardCvc') {
       setFormData({ ...formData, [name]: value.replace(/\D/g, '').slice(0, 3) });
       return;
@@ -60,11 +60,10 @@ const CheckoutForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Simple validation
+
     const required = ['firstName', 'lastName', 'email', 'address', 'city', 'postalCode', 'country', 'cardNumber', 'cardExpiry', 'cardCvc'];
     const missing = required.filter(field => !formData[field as keyof typeof formData]);
-    
+
     if (missing.length > 0) {
       toast.error(`Please fill in all required fields`);
       return;
@@ -76,8 +75,7 @@ const CheckoutForm: React.FC = () => {
     }
 
     setIsSubmitting(true);
-    
-    // Simulate API call
+
     setTimeout(() => {
       clearCart();
       setIsSubmitting(false);
@@ -88,90 +86,42 @@ const CheckoutForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="bg-white rounded-lg border p-6">
-        <h2 className="text-lg font-bold mb-4">Contact Information</h2>
+      <div className="bg-white dark:bg-gray-900 rounded-lg border dark:border-gray-700 p-6">
+        <h2 className="text-lg font-bold mb-4 dark:text-white">Contact Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">First Name</label>
-            <input
-              type="text"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop-primary/30"
-              required
-            />
+            <label className={labelClassName}>First Name</label>
+            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} className={inputClassName} required />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Last Name</label>
-            <input
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop-primary/30"
-              required
-            />
+            <label className={labelClassName}>Last Name</label>
+            <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} className={inputClassName} required />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium mb-1">Email Address</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop-primary/30"
-              required
-            />
+            <label className={labelClassName}>Email Address</label>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputClassName} required />
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border p-6">
-        <h2 className="text-lg font-bold mb-4">Shipping Address</h2>
+      <div className="bg-white dark:bg-gray-900 rounded-lg border dark:border-gray-700 p-6">
+        <h2 className="text-lg font-bold mb-4 dark:text-white">Shipping Address</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium mb-1">Street Address</label>
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop-primary/30"
-              required
-            />
+            <label className={labelClassName}>Street Address</label>
+            <input type="text" name="address" value={formData.address} onChange={handleChange} className={inputClassName} required />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">City</label>
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop-primary/30"
-              required
-            />
+            <label className={labelClassName}>City</label>
+            <input type="text" name="city" value={formData.city} onChange={handleChange} className={inputClassName} required />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Postal Code</label>
-            <input
-              type="text"
-              name="postalCode"
-              value={formData.postalCode}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop-primary/30"
-              required
-            />
+            <label className={labelClassName}>Postal Code</label>
+            <input type="text" name="postalCode" value={formData.postalCode} onChange={handleChange} className={inputClassName} required />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium mb-1">Country</label>
-            <select
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop-primary/30"
-              required
-            >
+            <label className={labelClassName}>Country</label>
+            <select name="country" value={formData.country} onChange={handleChange} className={inputClassName} required>
               <option value="United States">United States</option>
               <option value="Canada">Canada</option>
               <option value="United Kingdom">United Kingdom</option>
@@ -183,44 +133,20 @@ const CheckoutForm: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border p-6">
-        <h2 className="text-lg font-bold mb-4">Payment Information</h2>
+      <div className="bg-white dark:bg-gray-900 rounded-lg border dark:border-gray-700 p-6">
+        <h2 className="text-lg font-bold mb-4 dark:text-white">Payment Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium mb-1">Card Number</label>
-            <input
-              type="text"
-              name="cardNumber"
-              value={formData.cardNumber}
-              onChange={handleChange}
-              placeholder="1234 5678 9012 3456"
-              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop-primary/30"
-              required
-            />
+            <label className={labelClassName}>Card Number</label>
+            <input type="text" name="cardNumber" value={formData.cardNumber} onChange={handleChange} placeholder="1234 5678 9012 3456" className={inputClassName} required />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Expiry Date</label>
-            <input
-              type="text"
-              name="cardExpiry"
-              value={formData.cardExpiry}
-              onChange={handleChange}
-              placeholder="MM/YY"
-              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop-primary/30"
-              required
-            />
+            <label className={labelClassName}>Expiry Date</label>
+            <input type="text" name="cardExpiry" value={formData.cardExpiry} onChange={handleChange} placeholder="MM/YY" className={inputClassName} required />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">CVC</label>
-            <input
-              type="text"
-              name="cardCvc"
-              value={formData.cardCvc}
-              onChange={handleChange}
-              placeholder="123"
-              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop-primary/30"
-              required
-            />
+            <label className={labelClassName}>CVC</label>
+            <input type="text" name="cardCvc" value={formData.cardCvc} onChange={handleChange} placeholder="123" className={inputClassName} required />
           </div>
         </div>
       </div>

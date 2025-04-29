@@ -71,7 +71,7 @@ export default function ProductDetailPage() {
       <Button
         variant="ghost"
         onClick={() => router.push("/products")}
-        className="mb-4 hover:bg-gray-100"
+        className="mb-4 hover:bg-gray-100 dark:hover:bg-gray-800"
       >
         <ArrowLeft size={16} className="mr-2" />
         Back to Products
@@ -79,7 +79,7 @@ export default function ProductDetailPage() {
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white p-8 rounded-lg border flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-lg border dark:border-gray-700 flex items-center justify-center">
             <Skeleton className="w-full aspect-square" />
           </div>
           <div className="space-y-4">
@@ -92,7 +92,7 @@ export default function ProductDetailPage() {
         </div>
       ) : product ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white p-8 rounded-lg border flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-lg border dark:border-gray-700 flex items-center justify-center">
             <div className="relative w-full h-80">
               <Image
                 src={product.image}
@@ -106,7 +106,7 @@ export default function ProductDetailPage() {
             <span className="bg-shop-accent/10 text-shop-accent px-3 py-1 rounded-full text-sm font-medium">
               {product.category}
             </span>
-            <h1 className="text-2xl font-bold mt-2">{product.title}</h1>
+            <h1 className="text-2xl font-bold mt-2 dark:text-white">{product.title}</h1>
             <div className="flex items-center mt-2 mb-4">
               <div className="flex items-center">
                 {Array.from({ length: 5 }).map((_, index) => (
@@ -120,19 +120,19 @@ export default function ProductDetailPage() {
                     }
                   />
                 ))}
-                <span className="ml-2 text-sm text-gray-600">
+                <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
                   {product.rating.rate} ({product.rating.count} reviews)
                 </span>
               </div>
             </div>
-            <div className="text-3xl font-bold text-shop-primary mb-4">
+            <div className="text-3xl font-bold text-shop-primary dark:text-shop-primary mb-4">
               ${product.price.toFixed(2)}
             </div>
-            <p className="text-gray-600 mb-6">{product.description}</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">{product.description}</p>
             <Button
               size="lg"
               onClick={handleAddToCart}
-              className="bg-shop-primary hover:bg-shop-primary/90"
+              className="bg-shop-primary hover:bg-shop-primary/90 dark:bg-shop-primary/90 dark:hover:bg-shop-primary/80"
             >
               <ShoppingCart size={18} className="mr-2" />
               Add to Cart

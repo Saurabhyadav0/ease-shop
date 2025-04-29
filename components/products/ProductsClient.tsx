@@ -62,19 +62,23 @@ export default function ProductsClient() {
 
   return (
     <>
-      <ProductFilter 
-        categories={categories}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-        searchQuery={searchQuery}
-      />
-      
-      <ProductGrid 
-        products={filteredProducts} 
-        isLoading={isProductsLoading || isCategoriesLoading} 
-      />
+      <div className="bg-white dark:bg-gray-800 transition-colors">
+        <ProductFilter 
+          categories={categories}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          searchQuery={searchQuery}
+        />
+      </div>
+
+      <div className="transition-colors">
+        <ProductGrid 
+          products={filteredProducts} 
+          isLoading={isProductsLoading || isCategoriesLoading} 
+        />
+      </div>
     </>
   );
 }

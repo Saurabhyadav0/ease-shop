@@ -1,9 +1,8 @@
-
 import { Skeleton } from "@/components/ui/skeleton";
 
 const ProductSkeleton = () => {
   return (
-    <div className="border rounded-lg overflow-hidden bg-white">
+    <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-800">
       <div className="aspect-square">
         <Skeleton className="h-full w-full" />
       </div>

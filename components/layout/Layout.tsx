@@ -1,8 +1,8 @@
-"use client"; // Important if using Toaster, Zustand, etc. in the client-side
+"use client";
 
 import React from 'react';
 import { Navbar } from './Navbar';
-import { Toaster } from '@/components/ui/sonner'; // ✅ Next.js supports @ imports if set in tsconfig.json
+import { Toaster } from '@/components/ui/sonner';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -10,17 +10,21 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
       <Navbar />
+      
       <main className="flex-grow container mx-auto px-4 py-8">
         {children}
       </main>
-      <footer className="bg-white border-t py-6">
-        <div className="container mx-auto px-4 text-center text-gray-600">
+
+      <footer className="bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 py-6">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-gray-600 dark:text-gray-400 text-sm">
           <p>© {new Date().getFullYear()} ShopEase. All rights reserved.</p>
+          <p className="mt-2 md:mt-0">Made with <span className="text-red-500">❤️</span> by Saurabh</p>
         </div>
       </footer>
-      <Toaster position="top-right" />
+
+      <Toaster position="bottom-right" />
     </div>
   );
 };

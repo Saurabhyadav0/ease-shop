@@ -35,7 +35,7 @@ export default function RootLayout({
               </div>
             </footer>
           </div>
-          <Toaster position="top-right" />
+          <Toaster position="bottom-right" />
         </Providers>
       </body>
     </html>

@@ -16,7 +16,6 @@ export const Navbar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    // Ensure searchParams is not null before accessing .get()
     if (searchParams) {
       const currentSearch = searchParams.get('search') || '';
       setSearchQuery(currentSearch);
@@ -31,33 +30,37 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="bg-white border-b sticky top-0 z-10">
+    <header className=" backdrop-blur-md bg-white/50 dark:bg-gray-800/50 shadow-mdbg-white dark:bg-gray-900 border-b dark:border-gray-700 sticky top-0 z-10">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="text-2xl font-bold text-shop-primary">
+          {/* Logo */}
+          <Link href="/" className="text-2xl font-bold text-shop-primary dark:text-white">
             ShopEase
           </Link>
-          
+
+          {/* Search Bar */}
           <div className="hidden md:block flex-1 max-w-md mx-8">
             <form onSubmit={handleSearch} className="relative">
               <Input
                 type="text"
                 placeholder="Search products..."
-                className="w-full py-1.5 pl-10 pr-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-shop-primary/50"
+                className="w-full py-1.5 pl-10 pr-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-shop-primary/50 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Search size={18} className="absolute left-3 top-2 text-gray-400" />
+              <Search size={18} className="absolute left-3 top-2 text-gray-400 dark:text-gray-300" />
               <button type="submit" className="sr-only">Search</button>
             </form>
           </div>
-          
+
+          {/* Links and Icons */}
           <div className="flex items-center space-x-4">
-            <Link href="/products" className="text-gray-600 hover:text-shop-primary">
+            <Link href="/products" className="text-gray-600 hover:text-shop-primary dark:text-gray-300 dark:hover:text-shop-primary">
               Products
             </Link>
+
             <Link href="/checkout" className="relative">
-              <Button variant="ghost" className="relative p-2">
+              <Button variant="ghost" className="relative p-2 dark:text-white">
                 <ShoppingCart size={22} />
                 {totalItems() > 0 && (
                   <span className="absolute -top-1 -right-1 bg-shop-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -66,7 +69,11 @@ export const Navbar: React.FC = () => {
                 )}
               </Button>
             </Link>
-            <div><ToggleButton/></div>
+
+            {/* Toggle Theme Button */}
+            <div>
+              <ToggleButton />
+            </div>
           </div>
         </div>
       </div>
