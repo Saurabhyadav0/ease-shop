@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import useCartStore from "@/store/useCartStore";
 import ToggleButton from "../ToggleButton";
 import {
-  ClerkProvider,
   SignInButton,
   SignUpButton,
   SignedIn,
