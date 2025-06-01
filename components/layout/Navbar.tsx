@@ -1,19 +1,27 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { ShoppingCart, Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import useCartStore from '@/store/useCartStore';
-import ToggleButton from '../ToggleButton';
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ShoppingCart, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import useCartStore from "@/store/useCartStore";
+import ToggleButton from "../ToggleButton";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 
 export const Navbar: React.FC = () => {
   const { totalItems } = useCartStore();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [isMounted, setIsMounted] = useState(false); // To track client-side mounting
 
   useEffect(() => {
@@ -22,7 +30,7 @@ export const Navbar: React.FC = () => {
 
   useEffect(() => {
     if (searchParams) {
-      const currentSearch = searchParams.get('search') || '';
+      const currentSearch = searchParams.get("search") || "";
       setSearchQuery(currentSearch);
     }
   }, [searchParams]);
@@ -42,7 +50,10 @@ export const Navbar: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-shop-primary dark:text-white">
+          <Link
+            href="/"
+            className="text-2xl font-bold text-shop-primary dark:text-white"
+          >
             ShopEase
           </Link>
 
@@ -56,14 +67,22 @@ export const Navbar: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Search size={18} className="absolute left-3 top-2 text-gray-400 dark:text-gray-300" />
-              <button type="submit" className="sr-only">Search</button>
+              <Search
+                size={18}
+                className="absolute left-3 top-2 text-gray-400 dark:text-gray-300"
+              />
+              <button type="submit" className="sr-only">
+                Search
+              </button>
             </form>
           </div>
 
           {/* Links and Icons */}
           <div className="flex items-center space-x-4">
-            <Link href="/products" className="text-gray-600 hover:text-shop-primary dark:text-gray-300 dark:hover:text-shop-primary">
+            <Link
+              href="/products"
+              className="text-gray-600 hover:text-shop-primary dark:text-gray-300 dark:hover:text-shop-primary"
+            >
               Products
             </Link>
 
@@ -77,6 +96,14 @@ export const Navbar: React.FC = () => {
                 )}
               </Button>
             </Link>
+            {/* Authentication Buttons */}
+            <SignedOut>
+              <SignInButton />
+              <SignUpButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
 
             {/* Toggle Theme Button */}
             <div>

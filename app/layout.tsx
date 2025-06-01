@@ -4,6 +4,9 @@ import { Providers } from "./provider";
 import { Navbar } from "@/components/layout/Navbar";
 import "./globals.css";
 import { Suspense } from "react"; // 👈 import Suspense
+import {
+  ClerkProvider,
+} from '@clerk/nextjs'
 
 export const metadata: Metadata = {
   title: "ShopEase - Your Online Store",
@@ -21,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+           <ClerkProvider>
         <Providers>
           <div className="min-h-screen flex flex-col">
             <Suspense fallback={<div>Loading Navbar...</div>}>
@@ -37,6 +41,7 @@ export default function RootLayout({
           </div>
           <Toaster position="bottom-right" />
         </Providers>
+        </ClerkProvider>
       </body>
     </html>
   );
