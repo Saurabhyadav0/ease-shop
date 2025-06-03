@@ -85,7 +85,17 @@ export const Navbar: React.FC = () => {
               Products
             </Link>
 
-            <Link href="/checkout" className="relative">
+            {/* Orders Link */}
+            <SignedIn>
+              <Link
+                href="/orders"
+                className="text-gray-600 hover:text-shop-primary dark:text-gray-300 dark:hover:text-shop-primary"
+              >
+                Orders
+              </Link>
+            </SignedIn>
+
+            <Link href="/cart" className="relative">
               <Button variant="ghost" className="relative p-2 dark:text-white">
                 <ShoppingCart size={22} />
                 {totalItems() > 0 && (
@@ -95,11 +105,16 @@ export const Navbar: React.FC = () => {
                 )}
               </Button>
             </Link>
+
             {/* Authentication Buttons */}
             <SignedOut>
-              <SignInButton />
-              <SignUpButton />
+              <SignInButton mode="modal">
+                <Button variant="outline" size="sm">
+                  Login
+                </Button>
+              </SignInButton>
             </SignedOut>
+
             <SignedIn>
               <UserButton />
             </SignedIn>

@@ -11,7 +11,9 @@ import { useQuery } from '@tanstack/react-query';
 export default function ProductsClient() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams?.get('search') || '';
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const categoryQuery = searchParams?.get('category') || '';
+
+  const [selectedCategory, setSelectedCategory] = useState(categoryQuery);
   const [sortBy, setSortBy] = useState('');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
@@ -27,17 +29,20 @@ export default function ProductsClient() {
 
   useEffect(() => {
     if (!products.length) return;
-    
+
     let result = [...products];
 
     if (searchQuery) {
-      result = result.filter(product => 
+      result = result.filter(product =>
         product.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    if (selectedCategory) {
-      result = result.filter(product => product.category === selectedCategory);
+    if (categoryQuery) {
+      result = result.filter(product => product.category === categoryQuery);
+      setSelectedCategory(categoryQuery); // Keep the selected category in sync
+    } else {
+      setSelectedCategory(''); // Reset if no category in URL
     }
 
     if (sortBy) {
@@ -58,12 +63,12 @@ export default function ProductsClient() {
     }
 
     setFilteredProducts(result);
-  }, [products, selectedCategory, sortBy, searchQuery]);
+  }, [products, searchQuery, categoryQuery, sortBy]);
 
   return (
     <>
       <div className="bg-white dark:bg-gray-800 transition-colors">
-        <ProductFilter 
+        <ProductFilter
           categories={categories}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
@@ -74,9 +79,9 @@ export default function ProductsClient() {
       </div>
 
       <div className="transition-colors">
-        <ProductGrid 
-          products={filteredProducts} 
-          isLoading={isProductsLoading || isCategoriesLoading} 
+        <ProductGrid
+          products={filteredProducts}
+          isLoading={isProductsLoading || isCategoriesLoading}
         />
       </div>
     </>

@@ -7,6 +7,7 @@ import { Suspense } from "react"; // 👈 import Suspense
 import {
   ClerkProvider,
 } from '@clerk/nextjs'
+import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
   title: "ShopEase - Your Online Store",
@@ -33,11 +34,7 @@ export default function RootLayout({
             <main className="flex-grow container mx-auto px-4 py-8">
               {children}
             </main>
-            <footer className="bg-white border-t py-6">
-              <div className="container mx-auto px-4 text-center text-gray-600">
-                <p>© {new Date().getFullYear()} ShopEase. All rights reserved.</p>
-              </div>
-            </footer>
+            <Footer/>
           </div>
           <Toaster position="bottom-right" />
         </Providers>
