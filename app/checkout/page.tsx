@@ -5,27 +5,17 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import useCartStore from "@/store/useCartStore";
 import CartSummary from "@/components/checkout/CartSummary";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 
 export default function CheckoutPage() {
   const { items, clearCart } = useCartStore();
-
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  // Conversion rate (replace with live rate in production!)
-  const dollarToInr = 83; // 1 USD = 83 INR
-
-  // Calculate total in dollars
-  const totalUSD = items.reduce(
-    (sum: number, item: any) => sum + item.price * item.quantity,
-    0
-  );
-
-  // Convert to INR
+  const dollarToInr = 83;
+  const totalUSD = items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
   const totalINR = totalUSD * dollarToInr;
-    const router = useRouter();
 
-  // Load Razorpay script once
   useEffect(() => {
     if (!document.getElementById("razorpay-script")) {
       const script = document.createElement("script");
@@ -37,10 +27,6 @@ export default function CheckoutPage() {
   }, []);
 
   const createOrder = async () => {
-    if (!totalINR || totalINR <= 0) {
-      throw new Error("Total amount must be greater than zero");
-    }
-
     const res = await fetch("/api/create-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -48,10 +34,7 @@ export default function CheckoutPage() {
     });
 
     const data = await res.json();
-    if (!res.ok) {
-      throw new Error("Failed to create order: " + data.message);
-    }
-
+    if (!res.ok) throw new Error(data.message);
     return data.id;
   };
 
@@ -65,18 +48,15 @@ export default function CheckoutPage() {
 
     try {
       const order_id = await createOrder();
-      console.log("Order ID:", order_id);
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
-        amount: totalINR * 100, // in paise
+        amount: totalINR * 100,
         currency: "INR",
-        name: `Payment: ₹${totalINR.toFixed(2)}`, // Show final INR amount
-        description: "Thank you for your purchase",
+        name: "ShopEase",
+        description: `Order Total: ₹${totalINR.toFixed(2)}`,
         order_id,
         handler: async function (response: any) {
-          console.log("Payment response:", response);
-
           const verifyRes = await fetch("/api/verify-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -84,15 +64,13 @@ export default function CheckoutPage() {
           });
 
           const verifyData = await verifyRes.json();
-
           if (verifyRes.ok) {
             clearCart();
-            // Redirect to order success page with order & payment ids
-          router.push(
+            router.push(
               `/order-success?order_id=${response.razorpay_order_id}&payment_id=${response.razorpay_payment_id}`
             );
           } else {
-            alert("Payment verification failed: " + verifyData.message);
+            router.push("/payment-failed");
           }
 
           setIsLoading(false);
@@ -102,43 +80,33 @@ export default function CheckoutPage() {
           email: "customer@example.com",
           contact: "9999999999",
         },
-        theme: {
-          color: "#3399cc",
+        theme: { color: "#22c55e" },
+        modal: {
+          ondismiss: function () {
+            router.push("/payment-failed");
+            setIsLoading(false);
+          },
         },
       };
 
       const rzp = new (window as any).Razorpay(options);
 
-      rzp.on("payment.failed", function (response: any) {
-        console.error("Payment failed:", response.error);
-        alert("Payment failed: " + response.error.description);
-        setIsLoading(false);
-      });
-
       rzp.open();
     } catch (error) {
-      console.error("Payment error:", error);
-      alert("Something went wrong during payment.");
+      console.error(error);
+      alert("Something went wrong. Try again.");
       setIsLoading(false);
     }
   };
 
   if (items.length === 0) {
     return (
-      <div className="max-w-3xl mx-auto text-center py-12">
-        <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-gray-100">
-          Your Cart is Empty
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-8">
-          You haven&apos;t added anything to your cart yet. Start shopping now!
-        </p>
-        <Link href="/products" passHref>
-          <Button
-            as="a"
-            size="lg"
-            className="bg-shop-primary hover:bg-shop-primary/90 text-white dark:text-white"
-          >
-            Shop Now
+      <div className="max-w-3xl mx-auto text-center py-16 px-4">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Your Cart is Empty</h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">Add items to proceed with checkout.</p>
+        <Link href="/products">
+          <Button className="bg-shop-primary hover:bg-shop-primary/90 text-white px-6 py-2 rounded-full">
+            Shop Products
           </Button>
         </Link>
       </div>
@@ -146,29 +114,28 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto py-12">
-      <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">
-        Checkout - Total: ₹{totalINR.toFixed(2)}
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h1 className="text-3xl sm:text-4xl font-bold mb-10 text-gray-900 dark:text-white text-center">
+        Checkout
       </h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          {/* Removed CheckoutForm */}
+      <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex-1 bg-white dark:bg-gray-900 p-6 rounded-xl shadow-lg max-w-full">
+          <h2 className="text-xl font-semibold mb-6 text-gray-800 dark:text-gray-200">
+            Order Summary
+          </h2>
+          <CartSummary isCheckout />
+
           <Button
             onClick={handlePayment}
             size="lg"
             disabled={isLoading}
-            className={`mt-6 ${
-              isLoading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-green-600 hover:bg-green-700"
-            } text-white dark:text-white`}
+            className={`mt-8 w-full ${
+              isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"
+            } text-white`}
           >
-            {isLoading ? "Processing Payment..." : "Pay with Razorpay"}
+            {isLoading ? "Processing..." : `Pay ₹${totalINR.toFixed(2)} with Razorpay`}
           </Button>
-        </div>
-        <div>
-          <CartSummary isCheckout />
         </div>
       </div>
     </div>
