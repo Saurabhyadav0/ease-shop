@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { amount } = body;
 
-    console.log("Amount received:", amount);
+    console.log("Amount received (paise):", amount);
     console.log("Key ID:", process.env.RAZORPAY_KEY_ID);
     console.log("Key Secret:", process.env.RAZORPAY_KEY_SECRET ? "Exists" : "Missing");
 
@@ -20,14 +20,14 @@ export async function POST(req: Request) {
     }
 
     const order = await razorpay.orders.create({
-      amount: amount * 100,
+      amount: Math.round(amount), // ✅ ensure it's an integer
       currency: "INR",
       receipt: `receipt_order_${Date.now()}`,
     });
 
     return NextResponse.json({ id: order.id });
   } catch (error: any) {
-    console.error("🔥 Razorpay Order Error:", error); // Show the exact cause
+    console.error("🔥 Razorpay Order Error:", error);
     return NextResponse.json({ message: "Order creation failed", error: error.message }, { status: 500 });
   }
 }
