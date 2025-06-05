@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import OrderSuccessPageClient from "./order-sucessclientpage";
+import OrderSuccessPageClient from "./order-successpageclient";
 
 export default function OrderSuccessPage() {
   return (
