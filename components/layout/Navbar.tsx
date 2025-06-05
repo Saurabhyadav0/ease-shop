@@ -10,7 +10,6 @@ import useCartStore from "@/store/useCartStore";
 import ToggleButton from "../ToggleButton";
 import {
   SignInButton,
-  SignUpButton,
   SignedIn,
   SignedOut,
   UserButton,

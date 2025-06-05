@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { ChevronDown, X, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter} from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,7 +37,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
   searchQuery = "",
 }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
 
   // Sync UI changes with URL query parameters
   useEffect(() => {

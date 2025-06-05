@@ -7,6 +7,14 @@ import useCartStore from "@/store/useCartStore";
 import CartSummary from "@/components/checkout/CartSummary";
 import { useRouter } from "next/navigation"; 
 
+
+// Add Razorpay type to window for TypeScript
+declare global {
+  interface Window {
+    Razorpay;
+  }
+}
+
 export default function CheckoutPage() {
   const { items, clearCart } = useCartStore();
 
@@ -17,7 +25,7 @@ export default function CheckoutPage() {
 
   // Calculate total in dollars
   const totalUSD = items.reduce(
-    (sum: number, item: any) => sum + item.price * item.quantity,
+    (sum: number, item) => sum + item.price * item.quantity,
     0
   );
 
@@ -74,7 +82,7 @@ export default function CheckoutPage() {
         name: `Payment: ₹${totalINR.toFixed(2)}`, // Show final INR amount
         description: "Thank you for your purchase",
         order_id,
-        handler: async function (response: any) {
+        handler: async function (response) {
           console.log("Payment response:", response);
 
           const verifyRes = await fetch("/api/verify-payment", {
@@ -107,9 +115,9 @@ export default function CheckoutPage() {
         },
       };
 
-      const rzp = new (window as any).Razorpay(options);
+      const rzp = new (window).Razorpay(options);
 
-      rzp.on("payment.failed", function (response: any) {
+      rzp.on("payment.failed", function (response) {
         console.error("Payment failed:", response.error);
         alert("Payment failed: " + response.error.description);
         setIsLoading(false);
@@ -134,7 +142,6 @@ export default function CheckoutPage() {
         </p>
         <Link href="/products" passHref>
           <Button
-            as="a"
             size="lg"
             className="bg-shop-primary hover:bg-shop-primary/90 text-white dark:text-white"
           >
