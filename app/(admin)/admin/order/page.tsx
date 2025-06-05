@@ -1,79 +1,98 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
 
-interface Order {
+type Order = {
   _id: string;
-  name: string;
-  email: string;
-  contact: string;
-  address: string;
-}
+  userId: string;
+  items: {
+    name: string;
+    price: number;
+    quantity: number;
+  }[];
+  total: number;
+  paymentId: string;
+  createdAt: string;
+};
 
 export default function AdminOrdersPage() {
-  const { user, isSignedIn, isLoaded } = useUser();
-  const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Correctly fetch public admin emails
-  const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(",") || [];
-
-  // Safely access the user's email
-  const email = user?.emailAddresses?.[0]?.emailAddress;
-  const isAdmin = isSignedIn && email && adminEmails.includes(email);
+  const router = useRouter();
+  const { user, isLoaded } = useUser();
 
   useEffect(() => {
-    if (isLoaded && !isAdmin) {
-      router.push("/");
-    }
-  }, [isLoaded, isAdmin]);
+    if (!isLoaded) return;
 
-  useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch("/api/get-orders");
-        if (!res.ok) throw new Error("Failed to fetch");
+        const res = await fetch("/api/admin/admin-order");
+        if (res.status === 403) {
+          alert("Unauthorized. Only admins can view this page.");
+          router.push("/");
+          return;
+        }
         const data = await res.json();
-        setOrders(data);
-      } catch (err) {
-        console.error("Error loading orders:", err);
+        setOrders(data.orders);
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    if (isAdmin) {
-      fetchOrders();
-    }
-  }, [isAdmin]);
+    fetchOrders();
+  }, [isLoaded, router]);
 
-  if (!isAdmin) {
-    return <p className="text-center mt-10">Checking permissions...</p>;
-  }
+  if (loading) return <div className="p-6 text-center">Loading orders...</div>;
+
+  if (orders.length === 0)
+    return <div className="p-6 text-center">No orders found.</div>;
 
   return (
-    <div className="max-w-4xl mx-auto py-10 px-4">
-      <h1 className="text-2xl font-bold mb-6 text-center">All Customer Orders</h1>
-      {loading ? (
-        <p className="text-center">Loading...</p>
-      ) : orders.length === 0 ? (
-        <p className="text-center">No orders found.</p>
-      ) : (
-        <div className="space-y-4">
-          {orders.map((order) => (
-            <Card key={order._id} className="p-4 shadow">
-              <p><strong>Name:</strong> {order.name}</p>
-              <p><strong>Email:</strong> {order.email}</p>
-              <p><strong>Contact:</strong> {order.contact}</p>
-              <p><strong>Address:</strong> {order.address}</p>
-            </Card>
-          ))}
-        </div>
-      )}
+    <div className="max-w-7xl mx-auto px-4 py-10">
+      <h1 className="text-3xl font-bold mb-8 text-center text-gray-900 dark:text-white">
+        All Orders (Admin Panel)
+      </h1>
+
+      <div className="overflow-x-auto border rounded-lg shadow">
+        <table className="min-w-full table-auto text-left text-sm text-gray-700 dark:text-gray-300">
+          <thead className="bg-gray-100 dark:bg-gray-800 text-xs uppercase">
+            <tr>
+              <th className="px-6 py-3">Order ID</th>
+              <th className="px-6 py-3">User ID</th>
+              <th className="px-6 py-3">Items</th>
+              <th className="px-6 py-3">Total (₹)</th>
+              <th className="px-6 py-3">Payment ID</th>
+              <th className="px-6 py-3">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((order) => (
+              <tr key={order._id} className="border-t dark:border-gray-700">
+                <td className="px-6 py-4">{order._id}</td>
+                <td className="px-6 py-4">{order.userId}</td>
+                <td className="px-6 py-4">
+                  <ul className="list-disc pl-4">
+                    {order.items.map((item, idx) => (
+                      <li key={idx}>
+                        {item.name} × {item.quantity} (₹{item.price})
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+                <td className="px-6 py-4 font-semibold">₹{order.total}</td>
+                <td className="px-6 py-4">{order.paymentId}</td>
+                <td className="px-6 py-4">
+                  {new Date(order.createdAt).toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

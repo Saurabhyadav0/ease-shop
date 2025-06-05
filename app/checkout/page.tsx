@@ -13,8 +13,12 @@ export default function CheckoutPage() {
   const router = useRouter();
 
   const dollarToInr = 83;
-  const totalUSD = items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
+  const totalUSD = items.reduce(
+    (sum: number, item: any) => sum + item.price * item.quantity,
+    0
+  );
   const totalINR = totalUSD * dollarToInr;
+  const totalPaise = Math.round(totalINR * 100); // ✅ Razorpay needs amount in paise
 
   useEffect(() => {
     if (!document.getElementById("razorpay-script")) {
@@ -30,7 +34,7 @@ export default function CheckoutPage() {
     const res = await fetch("/api/create-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: totalINR }),
+      body: JSON.stringify({ amount: totalPaise }), // ✅ send amount in paise
     });
 
     const data = await res.json();
@@ -51,7 +55,7 @@ export default function CheckoutPage() {
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
-        amount: totalINR * 100,
+        amount: totalPaise, // ✅ amount in paise
         currency: "INR",
         name: "ShopEase",
         description: `Order Total: ₹${totalINR.toFixed(2)}`,
@@ -60,10 +64,15 @@ export default function CheckoutPage() {
           const verifyRes = await fetch("/api/verify-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(response),
+            body: JSON.stringify({
+              ...response,
+              total: totalINR,
+              items,
+            }),
           });
 
           const verifyData = await verifyRes.json();
+
           if (verifyRes.ok) {
             clearCart();
             router.push(
@@ -90,7 +99,6 @@ export default function CheckoutPage() {
       };
 
       const rzp = new (window as any).Razorpay(options);
-
       rzp.open();
     } catch (error) {
       console.error(error);
@@ -102,8 +110,12 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="max-w-3xl mx-auto text-center py-16 px-4">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Your Cart is Empty</h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">Add items to proceed with checkout.</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          Your Cart is Empty
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">
+          Add items to proceed with checkout.
+        </p>
         <Link href="/products">
           <Button className="bg-shop-primary hover:bg-shop-primary/90 text-white px-6 py-2 rounded-full">
             Shop Products
@@ -131,10 +143,14 @@ export default function CheckoutPage() {
             size="lg"
             disabled={isLoading}
             className={`mt-8 w-full ${
-              isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"
+              isLoading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700"
             } text-white`}
           >
-            {isLoading ? "Processing..." : `Pay ₹${totalINR.toFixed(2)} with Razorpay`}
+            {isLoading
+              ? "Processing..."
+              : `Pay ₹${totalINR.toFixed(2)} with Razorpay`}
           </Button>
         </div>
       </div>
