@@ -31,21 +31,23 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Fetch user data from Clerk API to get email
     const user = await getUserById(userId);
-    const email = user.primary_email_address?.email_address?.toLowerCase();
+
+    const primaryEmailId = user.primary_email_address_id;
+    const emailObj = user.email_addresses.find(
+      (email) => email.id === primaryEmailId
+    );
+    const email = emailObj?.email_address?.toLowerCase();
 
     if (!email || !adminEmails.includes(email)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Connect to DB and fetch orders
     await connectToDatabase();
     const orders = await Order.find().sort({ createdAt: -1 });
 
     return NextResponse.json({ orders }, { status: 200 });
-  } catch (err: any) {
-    console.error("Error fetching orders:", err.message);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  } catch (err) {
+    return NextResponse.json({ err: "Internal Server Error", message: err.message }, { status: 500 });
   }
 }

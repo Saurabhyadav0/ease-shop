@@ -5,6 +5,7 @@ import Link from "next/link";
 import FooterTop from "./FooterTop";
 import { Input } from "@/components/ui/input";
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { SVGProps } from "react";
 
 // Dummy data for categories if not already declared elsewhere
 const categoriesData = [
@@ -17,12 +18,15 @@ const categoriesData = [
 
 
 const Footer: React.FC = () => {
-  type SocialMediaLink = {
-    icon: React.ReactElement;
-    href: string;
-    color: string;
-    label: string;
-  };
+ type NewType = {
+  icon: React.ReactElement<SVGProps<SVGSVGElement>>;
+  href: string;
+  color: string;
+  label: string;
+};
+
+
+  type SocialMediaLink = NewType;
 
   const socialMediaLinks: SocialMediaLink[] = [
     { icon: <FaFacebookF />, href: "https://www.facebook.com", color: "#1877F2", label: "Facebook" },

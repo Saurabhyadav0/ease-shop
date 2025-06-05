@@ -21,7 +21,7 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const { user, isLoaded } = useUser();
+  const {  isLoaded } = useUser();
 
   useEffect(() => {
     if (!isLoaded) return;

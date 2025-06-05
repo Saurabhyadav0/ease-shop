@@ -1,6 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+
+// Add Razorpay type to window for TypeScript
+declare global {
+  interface Window {
+    Razorpay;
+  }
+}
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import useCartStore from "@/store/useCartStore";
@@ -14,7 +22,7 @@ export default function CheckoutPage() {
 
   const dollarToInr = 83;
   const totalUSD = items.reduce(
-    (sum: number, item: any) => sum + item.price * item.quantity,
+    (sum: number, item) => sum + item.price * item.quantity,
     0
   );
   const totalINR = totalUSD * dollarToInr;
@@ -60,7 +68,7 @@ export default function CheckoutPage() {
         name: "ShopEase",
         description: `Order Total: ₹${totalINR.toFixed(2)}`,
         order_id,
-        handler: async function (response: any) {
+        handler: async function (response) {
           const verifyRes = await fetch("/api/verify-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -71,7 +79,7 @@ export default function CheckoutPage() {
             }),
           });
 
-          const verifyData = await verifyRes.json();
+          // const verifyData = await verifyRes.json();
 
           if (verifyRes.ok) {
             clearCart();
@@ -98,7 +106,7 @@ export default function CheckoutPage() {
         },
       };
 
-      const rzp = new (window as any).Razorpay(options);
+      const rzp = new (window).Razorpay(options);
       rzp.open();
     } catch (error) {
       console.error(error);

@@ -17,7 +17,6 @@ export default function SuccessPage() {
       </p>
       <Link href="/products" passHref>
         <Button
-          as="a"
           size="lg"
           className="bg-shop-primary hover:bg-shop-primary/90 text-white dark:text-white"
         >

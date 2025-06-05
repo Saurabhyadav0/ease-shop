@@ -31,7 +31,7 @@ export default function CartPage() {
             Your cart is feeling lonely
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6 text-base sm:text-lg">
-            Looks like you haven't added anything yet. Start exploring now!
+            Looks like you haven&apos;t added anything yet. Start exploring now!
           </p>
 
           <Button
